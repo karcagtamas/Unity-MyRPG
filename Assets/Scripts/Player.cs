@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    private Animator anim;
     private Rigidbody2D rb;
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float jumpForce = 8f;
@@ -20,12 +21,14 @@ public class Player : MonoBehaviour
             .With("Positive", "<Keyboard>/d");
         inputAction.Enable();
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
         HandleInput();
         Move(xinput);
+        HandleAnimations();
     }
 
     private void HandleInput()
@@ -46,5 +49,11 @@ public class Player : MonoBehaviour
     private void Move(float by)
     {
         rb.linearVelocity = new Vector2(by * moveSpeed, rb.linearVelocity.y);
+    }
+
+    private void HandleAnimations()
+    {
+        bool isMoving = rb.linearVelocity.x != 0;
+        anim.SetBool("isMoving", isMoving);
     }
 }

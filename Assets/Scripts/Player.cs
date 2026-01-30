@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpForce = 8f;
     private float xinput;
     private InputAction inputAction;
+    [SerializeField] private bool facingRight = true;
 
     void Awake()
     {
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
         HandleInput();
         Move(xinput);
         HandleAnimations();
+        HandleFlip();
     }
 
     private void HandleInput()
@@ -38,6 +40,26 @@ public class Player : MonoBehaviour
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             Jump();
+        }
+    }
+
+    private void HandleAnimations()
+    {
+        bool isMoving = rb.linearVelocity.x != 0;
+        anim.SetBool("isMoving", isMoving);
+    }
+
+    private void HandleFlip()
+    {
+        // Should flip the character to right
+        if (rb.linearVelocity.x > 0 && !facingRight)
+        {
+            Flip();
+        }
+        // Should flip the character to left
+        else if (rb.linearVelocity.x < 0 && facingRight)
+        {
+            Flip();
         }
     }
 
@@ -51,9 +73,10 @@ public class Player : MonoBehaviour
         rb.linearVelocity = new Vector2(by * moveSpeed, rb.linearVelocity.y);
     }
 
-    private void HandleAnimations()
+    [ContextMenu("Flip")]
+    private void Flip()
     {
-        bool isMoving = rb.linearVelocity.x != 0;
-        anim.SetBool("isMoving", isMoving);
+        transform.Rotate(0, 180, 0);
+        facingRight = !facingRight;
     }
 }

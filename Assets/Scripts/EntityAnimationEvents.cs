@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerAnimationEvents : MonoBehaviour
+public class EntityAnimationEvents : MonoBehaviour
 {
     private Entity player;
 
@@ -9,7 +9,7 @@ public class PlayerAnimationEvents : MonoBehaviour
         player = GetComponentInParent<Entity>();
     }
 
-    public void DamageEnemies() => player.DamageTargets();
+    public void DamageTargets() => player.DamageTargets();
 
     private void DisableMovementAndJump() => player.EnableMovementAndJump(false);
 

@@ -85,7 +85,7 @@ public class Entity : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            TryToAttack();
+            HandleAttack();
         }
     }
 
@@ -120,7 +120,7 @@ public class Entity : MonoBehaviour
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
     }
 
-    protected virtual void TryToAttack()
+    protected virtual void HandleAttack()
     {
         if (isGrounded)
         {

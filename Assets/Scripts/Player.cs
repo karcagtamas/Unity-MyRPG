@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private bool facingRight = true;
 
     [Header("Collision details")]
-    [SerializeField] private float groundCheckDistance = 1.4f;
+    [SerializeField] private float groundCheckDistance = 1.35f;
     [SerializeField] private LayerMask whatIsGround;
     private bool isGrounded;
 
@@ -55,8 +55,9 @@ public class Player : MonoBehaviour
 
     private void HandleAnimations()
     {
-        bool isMoving = rb.linearVelocity.x != 0;
-        anim.SetBool("isMoving", isMoving);
+        anim.SetBool("isGrounded", isGrounded);
+        anim.SetFloat("xVelocity", rb.linearVelocity.x);
+        anim.SetFloat("yVelocity", rb.linearVelocity.y);
     }
 
     private void HandleFlip()

@@ -6,7 +6,12 @@ public class Entity : MonoBehaviour
 {
     protected Animator anim;
     protected Rigidbody2D rb;
+    protected Collider2D col;
     private InputAction inputAction;
+
+    [Header("Health")]
+    [SerializeField] private int maxHealth = 1;
+    [SerializeField] private int currentHealth = 1;
 
 
     [Header("Attack details")]
@@ -41,7 +46,10 @@ public class Entity : MonoBehaviour
             .With("Positive", "<Keyboard>/d");
         inputAction.Enable();
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
         anim = GetComponentInChildren<Animator>();
+        
+        currentHealth = maxHealth;
     }
 
     protected virtual void Update()
@@ -65,7 +73,12 @@ public class Entity : MonoBehaviour
 
     private void TakeDamage()
     {
-        throw new NotImplementedException();
+        currentHealth -= 1;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
     public void EnableMovementAndJump(bool enable)
@@ -153,5 +166,13 @@ public class Entity : MonoBehaviour
     {
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckDistance));
         Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
+    }
+
+    protected virtual void Die()
+    {
+        anim.enabled = false;
+        col.enabled = false;
+        rb.gravityScale = 12;
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 15);
     }
 }

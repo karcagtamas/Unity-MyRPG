@@ -71,4 +71,10 @@ public class Player : Entity
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
     }
+
+    protected override void Die()
+    {
+        base.Die();
+        UI.instance.EnableGameOverUI();
+    }
 }

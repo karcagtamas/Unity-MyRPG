@@ -30,7 +30,7 @@ public class Entity : MonoBehaviour
     [SerializeField] private float jumpForce = 8f;
     protected int facingDir = 1;
     private float xinput;
-    private bool facingRight = true;
+    protected bool facingRight = true;
     protected bool canMove = true;
     private bool canJump = true;
 
@@ -130,7 +130,7 @@ public class Entity : MonoBehaviour
         Move(canMove ? xinput : 0);
     }
 
-    protected void HandleFlip()
+    protected virtual void HandleFlip()
     {
         // Should flip the character to right
         if (rb.linearVelocity.x > 0 && !facingRight)
@@ -171,7 +171,7 @@ public class Entity : MonoBehaviour
     }
 
     [ContextMenu("Flip")]
-    private void Flip()
+    protected void Flip()
     {
         transform.Rotate(0, 180, 0);
         facingRight = !facingRight;

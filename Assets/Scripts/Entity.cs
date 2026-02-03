@@ -107,7 +107,7 @@ public class Entity : MonoBehaviour
     }
 
     [ContextMenu("Flip")]
-    protected void Flip()
+    public void Flip()
     {
         transform.Rotate(0, 180, 0);
         facingRight = !facingRight;

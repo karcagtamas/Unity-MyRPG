@@ -805,11 +805,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b8ca9fb10b65fefeb01e5de0207f476, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  maxHealth: 10
+  currentHealth: 1
+  damageMaterial: {fileID: 2100000, guid: bc3e55084d4ca2bcc966187e148c96d5, type: 2}
+  damageFeedbackDuration: 0.2
   attackRadius: 0.8
   attackPoint: {fileID: 166464398}
   whatIsTarget:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   moveSpeed: 3.5
   jumpForce: 8
   groundCheckDistance: 1.35
@@ -1103,6 +1107,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bf2b42b0ac9fbc65b9174213a203fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  maxHealth: 1
+  currentHealth: 1
+  damageMaterial: {fileID: 2100000, guid: bc3e55084d4ca2bcc966187e148c96d5, type: 2}
+  damageFeedbackDuration: 0.2
   attackRadius: 1.2
   attackPoint: {fileID: 1449284703}
   whatIsTarget:

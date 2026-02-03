@@ -9,47 +9,33 @@ public class Entity : MonoBehaviour
     protected Rigidbody2D rb;
     protected Collider2D col;
     protected SpriteRenderer sr;
-    private InputAction inputAction;
+    
 
     [Header("Health")]
     [SerializeField] private int maxHealth = 1;
     [SerializeField] private int currentHealth = 1;
     [SerializeField] private Material damageMaterial;
-    [SerializeField] private float damageFeedbackDuration = .2f;
+    [SerializeField] private float damageFeedbackDuration = .1f;
     private Coroutine damageFeedbackCoroutine;
-
 
     [Header("Attack details")]
     [SerializeField] protected float attackRadius;
     [SerializeField] protected Transform attackPoint;
     [SerializeField] protected LayerMask whatIsTarget;
 
-
-    [Header("Movement details")]
-    [SerializeField] protected float moveSpeed = 3.5f;
-    [SerializeField] private float jumpForce = 8f;
-    protected int facingDir = 1;
-    private float xinput;
-    protected bool facingRight = true;
-    protected bool canMove = true;
-    private bool canJump = true;
-
     [Header("Collision details")]
     [SerializeField] private float groundCheckDistance = 1.35f;
     [SerializeField] private LayerMask whatIsGround;
-    private bool isGrounded;
+    protected bool isGrounded;
+
+    // Direction details
+    protected int facingDir = 1;
+    protected bool facingRight = true;
+    protected bool canMove = true;
 
 
-    void Awake()
+    protected virtual void Awake()
     {
-        inputAction = new InputAction(
-            type: InputActionType.Value,
-            binding: "<Keyboard>/a"
-        );
-        inputAction.AddCompositeBinding("1DAxis")
-            .With("Negative", "<Keyboard>/a")
-            .With("Positive", "<Keyboard>/d");
-        inputAction.Enable();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
@@ -61,7 +47,6 @@ public class Entity : MonoBehaviour
     protected virtual void Update()
     {
         HandleCollision();
-        HandleInput();
         HandleMovement();
         HandleAnimations();
         HandleFlip();
@@ -77,58 +62,17 @@ public class Entity : MonoBehaviour
         }
     }
 
-    private void TakeDamage()
-    {
-        currentHealth -= 1;
-        DamageFeedback();
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    private void DamageFeedback()
-    {
-        if (damageFeedbackCoroutine != null)
-        {
-            StopCoroutine(damageFeedbackCoroutine);
-        }
-        damageFeedbackCoroutine = StartCoroutine(DamageFeedbackCoroutine());
-    }
-
-    public void EnableMovementAndJump(bool enable)
+    public virtual void EnableMovement(bool enable)
     {
         canMove = enable;
-        canJump = enable;
     }
 
-    private void HandleInput()
+    protected virtual void HandleAnimations()
     {
-        xinput = inputAction.ReadValue<float>();
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            TryToJump();
-        }
-
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            HandleAttack();
-        }
-    }
-
-    protected void HandleAnimations()
-    {
-        anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("xVelocity", rb.linearVelocity.x);
-        anim.SetFloat("yVelocity", rb.linearVelocity.y);
     }
 
-    protected virtual void HandleMovement()
-    {
-        Move(canMove ? xinput : 0);
-    }
+    protected virtual void HandleMovement() { }
 
     protected virtual void HandleFlip()
     {
@@ -157,17 +101,9 @@ public class Entity : MonoBehaviour
         }
     }
 
-    private void TryToJump()
+    protected void Move(float by, float speed)
     {
-        if (isGrounded && canJump)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        }
-    }
-
-    protected void Move(float by)
-    {
-        rb.linearVelocity = new Vector2(by * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(by * speed, rb.linearVelocity.y);
     }
 
     [ContextMenu("Flip")]
@@ -176,6 +112,26 @@ public class Entity : MonoBehaviour
         transform.Rotate(0, 180, 0);
         facingRight = !facingRight;
         facingDir = -facingDir;
+    }
+
+    private void TakeDamage()
+    {
+        currentHealth -= 1;
+        DamageFeedback();
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void DamageFeedback()
+    {
+        if (damageFeedbackCoroutine != null)
+        {
+            StopCoroutine(damageFeedbackCoroutine);
+        }
+        damageFeedbackCoroutine = StartCoroutine(DamageFeedbackCoroutine());
     }
 
     private void OnDrawGizmos()
@@ -190,6 +146,8 @@ public class Entity : MonoBehaviour
         col.enabled = false;
         rb.gravityScale = 12;
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 15);
+
+        Destroy(gameObject, 3);
     }
 
     private IEnumerator DamageFeedbackCoroutine()
